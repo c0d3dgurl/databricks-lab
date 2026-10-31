@@ -1,0 +1,703 @@
+{
+  "datasets": [
+    {
+      "name": "daily",
+      "displayName": "Daily sales",
+      "queryLines": [
+        "SELECT order_date, category, orders, revenue_ghs FROM workspace.shop.gold_daily"
+      ]
+    },
+    {
+      "name": "category_city",
+      "displayName": "Category by city and age band",
+      "queryLines": [
+        "SELECT city, age_band, category, orders, revenue_ghs, avg_rating FROM workspace.shop.gold_category_city"
+      ]
+    },
+    {
+      "name": "preferences",
+      "displayName": "Customer preferences",
+      "queryLines": [
+        "SELECT age_band, favourite_category, count(*) AS customers ",
+        "FROM workspace.shop.gold_customer_preferences GROUP BY ALL"
+      ]
+    },
+    {
+      "name": "personas",
+      "displayName": "Customer personas",
+      "queryLines": [
+        "SELECT customer_id, name, city, age_band, persona, favourite_category, total_spend_ghs, ",
+        "preferred_payment, orders, spend_tier FROM workspace.shop.gold_personas"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "overview",
+      "displayName": "Mart 233",
+      "layout": [
+        {
+          "widget": {
+            "name": "title",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Mart 233: what do shoppers prefer?\n",
+                "A made-up online shop in Ghana. Every customer, product and price is invented. Prices in Ghana cedis (GHS)."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "orders",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "daily",
+                  "fields": [
+                    {
+                      "name": "sum(orders)",
+                      "expression": "SUM(`orders`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(orders)",
+                  "displayName": "Orders, last 90 days"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Orders, last 90 days"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "daily",
+                  "fields": [
+                    {
+                      "name": "sum(revenue_ghs)",
+                      "expression": "SUM(`revenue_ghs`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(revenue_ghs)",
+                  "displayName": "Revenue (GHS)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue (GHS)"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "customers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "preferences",
+                  "fields": [
+                    {
+                      "name": "sum(customers)",
+                      "expression": "SUM(`customers`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(customers)",
+                  "displayName": "Customers"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Customers"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "daily_revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "daily",
+                  "fields": [
+                    {
+                      "name": "order_date",
+                      "expression": "`order_date`"
+                    },
+                    {
+                      "name": "sum(revenue_ghs)",
+                      "expression": "SUM(`revenue_ghs`)"
+                    },
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "order_date",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Day"
+                },
+                "y": {
+                  "fieldName": "sum(revenue_ghs)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Revenue (GHS)"
+                },
+                "color": {
+                  "fieldName": "category",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Category"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue per day by category"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "city_orders",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "category_city",
+                  "fields": [
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    },
+                    {
+                      "name": "sum(orders)",
+                      "expression": "SUM(`orders`)"
+                    },
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "city",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "City"
+                },
+                "y": {
+                  "fieldName": "sum(orders)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Orders"
+                },
+                "color": {
+                  "fieldName": "category",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Category"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Orders by city: each city leans towards one category"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 11,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "age_favourite",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "preferences",
+                  "fields": [
+                    {
+                      "name": "age_band",
+                      "expression": "`age_band`"
+                    },
+                    {
+                      "name": "sum(customers)",
+                      "expression": "SUM(`customers`)"
+                    },
+                    {
+                      "name": "favourite_category",
+                      "expression": "`favourite_category`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "age_band",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Age band"
+                },
+                "y": {
+                  "fieldName": "sum(customers)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Customers"
+                },
+                "color": {
+                  "fieldName": "favourite_category",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Favourite category"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Favourite category by age band"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 11,
+            "width": 3,
+            "height": 7
+          }
+        }
+      ]
+    },
+    {
+      "name": "personas",
+      "displayName": "Personas",
+      "layout": [
+        {
+          "widget": {
+            "name": "persona_intro",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Shopper personas\n",
+                "Each customer gets a persona from the category they order most. ",
+                "**Mobile first**: phones · **Trend setter**: fashion · **Gadget lover**: electronics · ",
+                "**Home maker**: home · **Family stocker**: groceries · **Self-care regular**: beauty. ",
+                "The top 20% by spend in each persona are marked *Top spender*."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "city_filter",
+            "queries": [
+              {
+                "name": "city_values",
+                "query": {
+                  "datasetName": "personas",
+                  "fields": [
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "city",
+                    "displayName": "City",
+                    "queryName": "city_values"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "City"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "persona_customers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "personas",
+                  "fields": [
+                    {
+                      "name": "persona",
+                      "expression": "`persona`"
+                    },
+                    {
+                      "name": "count(customer_id)",
+                      "expression": "COUNT(`customer_id`)"
+                    },
+                    {
+                      "name": "age_band",
+                      "expression": "`age_band`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "persona",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Persona"
+                },
+                "y": {
+                  "fieldName": "count(customer_id)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Customers"
+                },
+                "color": {
+                  "fieldName": "age_band",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Age band"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Customers per persona, by age band"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "persona_spend",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "personas",
+                  "fields": [
+                    {
+                      "name": "persona",
+                      "expression": "`persona`"
+                    },
+                    {
+                      "name": "avg(total_spend_ghs)",
+                      "expression": "AVG(`total_spend_ghs`)"
+                    },
+                    {
+                      "name": "spend_tier",
+                      "expression": "`spend_tier`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "persona",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Persona"
+                },
+                "y": {
+                  "fieldName": "avg(total_spend_ghs)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Average spend (GHS)"
+                },
+                "color": {
+                  "fieldName": "spend_tier",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Spend tier"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average spend per persona (GHS)"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 3,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "persona_city",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "personas",
+                  "fields": [
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    },
+                    {
+                      "name": "count(customer_id)",
+                      "expression": "COUNT(`customer_id`)"
+                    },
+                    {
+                      "name": "persona",
+                      "expression": "`persona`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "city",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "City"
+                },
+                "y": {
+                  "fieldName": "count(customer_id)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Customers"
+                },
+                "color": {
+                  "fieldName": "persona",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Persona"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Personas in each city"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "persona_payment",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "personas",
+                  "fields": [
+                    {
+                      "name": "persona",
+                      "expression": "`persona`"
+                    },
+                    {
+                      "name": "count(customer_id)",
+                      "expression": "COUNT(`customer_id`)"
+                    },
+                    {
+                      "name": "preferred_payment",
+                      "expression": "`preferred_payment`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "persona",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Persona"
+                },
+                "y": {
+                  "fieldName": "count(customer_id)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Customers"
+                },
+                "color": {
+                  "fieldName": "preferred_payment",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Preferred payment"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "How each persona pays"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 10,
+            "width": 3,
+            "height": 7
+          }
+        }
+      ]
+    }
+  ]
+}

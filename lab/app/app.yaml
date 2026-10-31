@@ -1,0 +1,7 @@
+command: ["python", "app.py"]
+
+env:
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql-warehouse
+  # PGHOST, PGUSER, PGDATABASE and PGPORT are injected when you add the
+  # Lakebase database as an app resource. If they are not, set them here.

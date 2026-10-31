@@ -1,0 +1,38 @@
+bundle:
+  name: shop
+
+variables:
+  warehouse_id:
+    description: SQL warehouse the dashboard runs on
+    lookup:
+      warehouse: Serverless Starter Warehouse
+
+resources:
+  dashboards:
+    shop_dashboard:
+      display_name: Mart 233
+      file_path: ./dashboards/mart233.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+
+  jobs:
+    shop_pipeline:
+      name: shop-pipeline
+      schedule:
+        quartz_cron_expression: "0 0 * * * ?"   # every hour
+        timezone_id: Africa/Accra
+        pause_status: PAUSED                     # unpause in the UI when you want it
+      tasks:
+        - task_key: ingest
+          notebook_task:
+            notebook_path: ./01_ingest.py
+        - task_key: gold
+          depends_on:
+            - task_key: ingest
+          notebook_task:
+            notebook_path: ./02_gold.sql
+          # No cluster given, so both tasks run on serverless compute
+
+targets:
+  dev:
+    mode: development
+    default: true

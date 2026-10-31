@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mart 233</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #14181f; --ink-2: #4a5260; --ink-3: #8a919c;
+    --bg: #f6f4f0; --card: #ffffff; --line: #e6e1d8;
+    --brand: #e8553a; --brand-ink: #b8361f; --ok: #12805c;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 15px/1.5 Inter, system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+  h1, h2, h3, .logo { font-family: 'Space Grotesk', Inter, sans-serif; }
+  button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+  /* Header */
+  header { position: sticky; top: 0; z-index: 10; background: var(--ink); color: #fff; }
+  .bar { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; }
+  .logo .mark { background: var(--brand); border-radius: 9px; padding: 3px 7px; font-size: 15px; }
+  .accounts { margin-left: auto; display: flex; gap: 6px; background: #232934; border-radius: 999px; padding: 4px; }
+  .accounts button { padding: 6px 14px; border-radius: 999px; font-size: 14px; color: #c9ced6; }
+  .accounts button.on { background: #fff; color: var(--ink); font-weight: 600; }
+  .basket-btn { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--brand); font-weight: 600; }
+  .basket-btn .n { background: #fff; color: var(--brand-ink); border-radius: 999px; min-width: 22px; text-align: center; font-size: 13px; padding: 0 6px; }
+  .src-toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #c9ced6; }
+  .src-toggle input { accent-color: var(--brand); }
+  nav { background: #1c222c; }
+  nav .bar { padding-top: 0; padding-bottom: 0; gap: 4px; }
+  nav button { padding: 11px 14px; color: #c9ced6; border-bottom: 2px solid transparent; font-size: 14px; }
+  nav button.on { color: #fff; border-color: var(--brand); }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 28px 20px 64px; }
+  section { margin-bottom: 40px; }
+  .head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .head h2 { font-size: 24px; }
+  .head p { color: var(--ink-2); }
+
+  /* Data source labels, shown with the toggle */
+  .src { display: none; font: 600 11px/1 'JetBrains Mono', ui-monospace, monospace; padding: 5px 8px; border-radius: 6px; white-space: nowrap; }
+  .src.delta { background: #fde7e1; color: var(--brand-ink); }
+  .src.pg { background: #dff3ea; color: var(--ok); }
+  body.show-src .src { display: inline-block; }
+
+  /* Hero */
+  .hero { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 28px; }
+  .hero h1 { font-size: 36px; line-height: 1.1; margin-bottom: 8px; }
+  .hero .facts { color: var(--ink-2); display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .fact { background: var(--bg); border-radius: 999px; padding: 4px 12px; font-size: 13px; }
+  .fact b { color: var(--ink); }
+  .interests h3 { font-size: 16px; margin-bottom: 4px; }
+  .interests p { color: var(--ink-2); font-size: 13px; margin-bottom: 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; display: flex; gap: 6px; align-items: center; }
+  .chip.on { border-color: var(--c); background: var(--t); color: var(--c); font-weight: 600; }
+  .chip.fav { border-style: dashed; }
+
+  /* Product cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+  .tile { position: relative; height: 140px; background: var(--t); color: var(--c); display: grid; place-items: center; }
+  .tile svg { width: 56px; height: 56px; }
+  .heart { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 999px; background: #fff; display: grid; place-items: center; color: var(--ink-3); }
+  .heart.on { color: var(--brand); }
+  .heart svg { width: 18px; height: 18px; }
+  .reason { position: absolute; left: 10px; bottom: 10px; background: #fff; color: var(--ink); font-size: 12px; font-weight: 600; border-radius: 999px; padding: 3px 10px; }
+  .body { padding: 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .cat { font-size: 12px; color: var(--c); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .name { font-weight: 600; }
+  .stars { color: #e0a100; font-size: 13px; }
+  .stars span { color: var(--ink-3); }
+  .row { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 10px; }
+  .price { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; }
+  .add { background: var(--ink); color: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 600; }
+  .stepper { display: flex; align-items: center; gap: 4px; background: var(--bg); border-radius: 999px; padding: 3px; }
+  .stepper button { width: 28px; height: 28px; border-radius: 999px; background: #fff; font-weight: 700; }
+  .stepper span { min-width: 20px; text-align: center; font-weight: 600; }
+
+  /* Basket drawer */
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(400px, 100vw); background: var(--card); box-shadow: -10px 0 40px rgba(0,0,0,.15); transform: translateX(105%); transition: transform .25s; z-index: 20; display: flex; flex-direction: column; }
+  .drawer.open { transform: none; }
+  .drawer header { background: none; color: var(--ink); position: static; display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--line); }
+  .drawer .items { flex: 1; overflow: auto; padding: 8px 20px; }
+  .line { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .line .sw { width: 44px; height: 44px; border-radius: 10px; background: var(--t); color: var(--c); display: grid; place-items: center; flex: none; }
+  .line .sw svg { width: 22px; height: 22px; }
+  .line .grow { flex: 1; }
+  .line small { color: var(--ink-2); }
+  .drawer footer { padding: 20px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
+  .total { display: flex; justify-content: space-between; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; }
+  .checkout { background: var(--brand); color: #fff; border-radius: 12px; padding: 14px; font-weight: 700; font-size: 16px; }
+  .checkout:disabled { opacity: .4; cursor: default; }
+  .past { font-size: 13px; color: var(--ink-2); }
+  .scrim { position: fixed; inset: 0; background: rgba(20,24,31,.35); z-index: 15; display: none; }
+  .scrim.open { display: block; }
+  .empty { color: var(--ink-2); padding: 24px 0; text-align: center; }
+
+  /* Manager view */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+  .kpi .v { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; }
+  .kpi .l { color: var(--ink-2); font-size: 13px; }
+  .kpi.live { border-color: #b9e3cf; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+  .panel h3 { font-size: 17px; margin-bottom: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .barrow { display: grid; grid-template-columns: 100px 1fr 110px; gap: 10px; align-items: center; padding: 6px 0; font-size: 14px; }
+  .barrow .track { height: 10px; background: var(--bg); border-radius: 999px; overflow: hidden; }
+  .barrow .fill { height: 100%; background: var(--c); border-radius: 999px; }
+  .barrow .num { text-align: right; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td, th { text-align: left; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  th { color: var(--ink-2); font-weight: 500; font-size: 13px; }
+  .feed li { list-style: none; display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .feed { padding: 0; }
+  .tag { font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 6px; padding: 2px 7px; height: fit-content; }
+  .tag.order { background: #dff3ea; color: var(--ok); }
+  .tag.like { background: #fde7e1; color: var(--brand-ink); }
+  .feed time { margin-left: auto; color: var(--ink-3); font-size: 12px; white-space: nowrap; }
+  .pulse { width: 8px; height: 8px; border-radius: 999px; background: var(--ok); display: inline-block; animation: p 1.6s infinite; }
+  @keyframes p { 50% { opacity: .25; } }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; transition: .2s; background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 30; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast code { color: #8ee3b5; }
+  footer.site { text-align: center; color: var(--ink-3); font-size: 13px; padding: 24px; }
+
+  @media (max-width: 760px) {
+    .hero, .cols { grid-template-columns: 1fr; }
+    .accounts { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="logo"><span class="mark">233</span> Mart 233</div>
+    <div class="accounts" id="accounts"></div>
+    <label class="src-toggle"><input type="checkbox" id="srcToggle"> Show data sources</label>
+    <button class="basket-btn" id="basketBtn">Basket <span class="n" id="basketCount">0</span></button>
+  </div>
+  <nav id="nav"><div class="bar" id="cats"></div></nav>
+</header>
+
+<main id="main"><p class="empty">Loading the shop...</p></main>
+<footer class="site">Mart 233 is a made-up shop for the Linux Accra Databricks lab. Every customer, product and price is invented.</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS = {
+  Phones:      { c: '#3b6fd8', t: '#e4ecfb', icon: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>' },
+  Fashion:     { c: '#c2410c', t: '#fbe6da', icon: '<path d="M8 3 3 6l2 4 3-1v12h8V9l3 1 2-4-5-3a4 4 0 0 1-8 0Z"/>' },
+  Electronics: { c: '#6d4bd1', t: '#ece6fa', icon: '<rect x="6" y="2" width="12" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="6" r="1"/>' },
+  Home:        { c: '#0f8a6a', t: '#ddf3ec', icon: '<path d="m3 11 9-8 9 8"/><path d="M5 9v12h14V9"/><path d="M10 21v-6h4v6"/>' },
+  Groceries:   { c: '#a16207', t: '#f8edd3', icon: '<path d="M3 9h18l-2 11H5L3 9Z"/><path d="m8 9 4-6 4 6"/>' },
+  Beauty:      { c: '#be3a78', t: '#f9e1ec', icon: '<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2Z"/>' },
+};
+const svg = (inner, w = 1.8) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+const HEART = '<path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 9.3 6C19 16.6 12 21 12 21Z"/>';
+const ghs = n => 'GHS ' + Number(n).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+const vars = cat => `--c:${CATS[cat].c};--t:${CATS[cat].t}`;
+const $ = id => document.getElementById(id);
+
+const S = { accounts: [], products: [], account: null, me: null, cat: 'All', timer: null };
+
+async function api(path, method = 'GET', body) {
+  const r = await fetch(path, { method, headers: { 'Content-Type': 'application/json' }, body: body && JSON.stringify(body) });
+  if (!r.ok) throw new Error((await r.text()) || r.statusText);
+  return r.json();
+}
+
+function toast(html) {
+  const t = $('toast'); t.innerHTML = html; t.classList.add('show');
+  clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function stars(r) {
+  if (r == null) return '<span>No ratings yet</span>';
+  const full = Math.round(r);
+  return '★'.repeat(full) + '<span>' + '★'.repeat(5 - full) + ' ' + Number(r).toFixed(1) + '</span>';
+}
+
+/* ---------- Header ---------- */
+
+function renderAccounts() {
+  const items = S.accounts.map(a => ({ id: a.customer_id, label: a.name.split(' ')[0] }))
+    .concat([{ id: 'manager', label: 'Store manager' }]);
+  $('accounts').innerHTML = items.map(i =>
+    `<button class="${S.account === i.id ? 'on' : ''}" data-acc="${i.id}">${esc(i.label)}</button>`).join('');
+  const shopper = S.account !== 'manager';
+  $('basketBtn').style.visibility = shopper ? 'visible' : 'hidden';
+  $('nav').style.display = shopper ? '' : 'none';
+  $('basketCount').textContent = shopper && S.me ? S.me.basket.reduce((n, b) => n + b.quantity, 0) : 0;
+}
+
+function renderCats() {
+  $('cats').innerHTML = ['All', ...Object.keys(CATS)].map(c =>
+    `<button class="${S.cat === c ? 'on' : ''}" data-cat="${c}">${c}</button>`).join('');
+}
+
+/* ---------- Shopper view ---------- */
+
+function card(p, reason) {
+  const inBasket = S.me.basket.find(b => b.product_id === p.product_id);
+  const liked = S.me.liked.includes(p.product_id);
+  return `<article class="card" style="${vars(p.category)}">
+    <div class="tile">${svg(CATS[p.category].icon, 1.4)}
+      <button class="heart ${liked ? 'on' : ''}" data-like="${p.product_id}" title="Wishlist">${svg(HEART, liked ? 0 : 2).replace('fill="none"', liked ? 'fill="currentColor"' : 'fill="none"')}</button>
+      ${reason ? `<span class="reason">${esc(reason)}</span>` : ''}
+    </div>
+    <div class="body">
+      <div class="cat">${p.category}</div>
+      <div class="name">${esc(p.product_name)}</div>
+      <div class="stars">${stars(p.avg_rating)}</div>
+      <div class="row">
+        <span class="price">${ghs(p.price_ghs)}</span>
+        ${inBasket
+          ? `<div class="stepper"><button data-qty="${p.product_id}" data-n="${inBasket.quantity - 1}">−</button><span>${inBasket.quantity}</span><button data-qty="${p.product_id}" data-n="${inBasket.quantity + 1}">+</button></div>`
+          : `<button class="add" data-qty="${p.product_id}" data-n="1">Add to basket</button>`}
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderShop() {
+  const { profile: me, interests } = S.me;
+  const first = me.name.split(' ')[0];
+  const shown = S.products.filter(p => S.cat === 'All' || p.category === S.cat);
+  $('main').innerHTML = `
+    <section class="hero">
+      <div>
+        <h1>Akwaaba, ${esc(first)}.</h1>
+        <p>Here is what we picked for you today.</p>
+        <div class="facts">
+          <span class="fact">${esc(me.age_band)} · <b>${esc(me.city)}</b></span>
+          <span class="fact">Persona: <b>${esc(me.persona)}</b>${me.spend_tier === 'Top spender' ? ' · top spender' : ''}</span>
+          <span class="fact">Shops <b>${me.favourite_category}</b> most</span>
+          <span class="fact">Spent <b>${ghs(me.total_spend_ghs)}</b></span>
+          <span class="fact">Pays by <b>${esc(me.preferred_payment.toLowerCase())}</b></span>
+        </div>
+        <p style="margin-top:14px"><span class="src delta">Delta · gold_personas</span></p>
+      </div>
+      <div class="interests">
+        <h3>Your interests</h3>
+        <p>Tick what you want to see more of. Saved instantly.</p>
+        <div class="chips">${Object.keys(CATS).map(c => {
+          const fav = c === me.favourite_category;
+          const on = fav || interests.includes(c);
+          return `<button class="chip ${on ? 'on' : ''} ${fav ? 'fav' : ''}" style="${vars(c)}" data-interest="${c}" ${fav ? 'disabled title="Your top category from your orders"' : ''}>${on ? '✓ ' : ''}${c}</button>`;
+        }).join('')}</div>
+        <p style="margin-top:12px"><span class="src pg">Lakebase · shop.interests</span></p>
+      </div>
+    </section>
+
+    <section>
+      <div class="head"><h2>Recommended for you</h2><p>Your top category, plus the interests you ticked</p><span class="src delta">Delta · gold_products</span></div>
+      <div class="grid">${S.me.recommended.map(p => card(p, p.reason)).join('')}</div>
+    </section>
+
+    <section>
+      <div class="head"><h2>${S.cat === 'All' ? 'Shop everything' : S.cat}</h2><p>${shown.length} products, most ordered first</p><span class="src pg">Lakebase · shop.basket · shop.likes</span></div>
+      <div class="grid">${shown.map(p => card(p)).join('')}</div>
+    </section>`;
+  renderDrawer();
+}
+
+function renderDrawer() {
+  const byId = Object.fromEntries(S.products.map(p => [p.product_id, p]));
+  const lines = S.me.basket.map(b => ({ ...b, p: byId[b.product_id] }));
+  const total = lines.reduce((n, l) => n + l.quantity * l.p.price_ghs, 0);
+  $('drawer').innerHTML = `
+    <header><h2 style="font-size:22px">${esc(S.me.profile.name.split(' ')[0])}'s basket</h2><button id="closeDrawer" style="font-size:22px">×</button></header>
+    <div class="items">${lines.length ? lines.map(l => `
+      <div class="line" style="${vars(l.p.category)}">
+        <div class="sw">${svg(CATS[l.p.category].icon)}</div>
+        <div class="grow"><div class="name">${esc(l.p.product_name)}</div><small>${ghs(l.p.price_ghs)} each</small></div>
+        <div class="stepper"><button data-qty="${l.product_id}" data-n="${l.quantity - 1}">−</button><span>${l.quantity}</span><button data-qty="${l.product_id}" data-n="${l.quantity + 1}">+</button></div>
+      </div>`).join('') : '<p class="empty">Your basket is empty.</p>'}
+    </div>
+    <footer>
+      <div class="total"><span>Total</span><span>${ghs(total)}</span></div>
+      <button class="checkout" id="checkout" ${lines.length ? '' : 'disabled'}>Pay with ${esc(S.me.profile.preferred_payment.toLowerCase())}</button>
+      <span class="src pg">Lakebase · shop.basket → shop.orders</span>
+      ${S.me.orders.length ? `<div class="past"><b>Recent orders</b><br>${S.me.orders.map(o =>
+        `#${o.id} · ${ghs(o.total_ghs)} · ${new Date(o.created_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}`).join('<br>')}</div>` : ''}
+    </footer>`;
+}
+
+/* ---------- Store manager view ---------- */
+
+async function renderManager() {
+  const m = await api('/api/manager');
+  if (S.account !== 'manager') return;
+  const max = Math.max(...m.history.by_category.map(c => c.revenue_ghs));
+  $('main').innerHTML = `
+    <section>
+      <div class="head"><h2>Store manager</h2><p>History from the lakehouse next to live activity from the app</p></div>
+      <div class="kpis">
+        <div class="kpi"><div class="v">${Number(m.history.orders).toLocaleString('en-GB')}</div><div class="l">Orders, last 90 days</div><span class="src delta">Delta · gold_daily</span></div>
+        <div class="kpi"><div class="v">${ghs(m.history.revenue_ghs).replace('.00', '')}</div><div class="l">Revenue, last 90 days</div><span class="src delta">Delta · gold_daily</span></div>
+        <div class="kpi live"><div class="v">${m.live.orders}</div><div class="l"><span class="pulse"></span> Orders placed in the app</div><span class="src pg">Lakebase · shop.orders</span></div>
+        <div class="kpi live"><div class="v">${ghs(m.live.revenue_ghs)}</div><div class="l"><span class="pulse"></span> Taken in the app</div><span class="src pg">Lakebase · shop.orders</span></div>
+        <div class="kpi live"><div class="v">${m.live.in_baskets}</div><div class="l"><span class="pulse"></span> Items sitting in baskets</div><span class="src pg">Lakebase · shop.basket</span></div>
+      </div>
+    </section>
+    <section class="cols">
+      <div class="panel">
+        <h3>Revenue by category <span class="src delta">Delta · gold_daily</span></h3>
+        ${m.history.by_category.map(c => `<div class="barrow" style="${vars(c.category)}">
+          <span>${c.category}</span><div class="track"><div class="fill" style="width:${(c.revenue_ghs / max * 100).toFixed(1)}%"></div></div>
+          <span class="num">${ghs(c.revenue_ghs).replace(/\.\d+$/, '')}</span></div>`).join('')}
+      </div>
+      <div class="panel">
+        <h3>Most ordered category per city <span class="src delta">Delta · gold_category_city</span></h3>
+        <table><tr><th>City</th><th>Top category</th><th style="text-align:right">Orders</th></tr>
+        ${m.history.by_city.map(r => `<tr><td>${esc(r.city)}</td><td style="color:${CATS[r.top_category].c};font-weight:600">${r.top_category}</td><td style="text-align:right">${Number(r.orders).toLocaleString('en-GB')}</td></tr>`).join('')}
+        </table>
+      </div>
+    </section>
+    <section class="panel">
+      <h3><span class="pulse"></span> Live from the shop <span class="src pg">Lakebase · shop.orders + shop.likes</span></h3>
+      ${m.live.feed.length ? `<ul class="feed">${m.live.feed.map(e => `<li><span class="tag ${e.kind}">${e.kind}</span>
+        <span><b>${esc(e.customer_name)}</b> ${e.kind === 'order' ? 'paid ' + esc(e.detail) : 'added ' + esc(e.detail) + ' to their wishlist'}</span>
+        <time>${new Date(e.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</time></li>`).join('')}</ul>`
+        : '<p class="empty">Nothing yet. Sign in as Ama or Kofi and buy something.</p>'}
+    </section>`;
+}
+
+/* ---------- Actions ---------- */
+
+async function signIn(id) {
+  S.account = id; clearInterval(S.timer);
+  if (id === 'manager') {
+    S.me = null; renderAccounts(); await renderManager();
+    S.timer = setInterval(renderManager, 4000);
+  } else {
+    S.me = await api(`/api/customers/${id}`); renderAccounts(); renderCats(); renderShop();
+  }
+}
+
+async function update(promise, message) {
+  try { S.me = await promise; renderAccounts(); renderShop(); toast(message); }
+  catch (e) { toast('Something went wrong: ' + esc(e.message)); }
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) { if (e.target.id === 'scrim') openDrawer(false); return; }
+  const cid = S.account;
+  if (t.dataset.acc) signIn(t.dataset.acc === 'manager' ? 'manager' : Number(t.dataset.acc));
+  else if (t.dataset.cat) { S.cat = t.dataset.cat; renderCats(); renderShop(); }
+  else if (t.dataset.like) update(api(`/api/customers/${cid}/likes/${t.dataset.like}`, 'POST'), 'Wishlist saved to <code>shop.likes</code> in Lakebase');
+  else if (t.dataset.qty) update(api(`/api/customers/${cid}/basket/${t.dataset.qty}`, 'PUT', { quantity: Number(t.dataset.n) }), 'Basket saved to <code>shop.basket</code> in Lakebase');
+  else if (t.dataset.interest) {
+    const now = new Set(S.me.interests); now.has(t.dataset.interest) ? now.delete(t.dataset.interest) : now.add(t.dataset.interest);
+    update(api(`/api/customers/${cid}/interests`, 'PUT', { categories: [...now] }), 'Interests saved to <code>shop.interests</code> in Lakebase');
+  }
+  else if (t.id === 'checkout') update(api(`/api/customers/${cid}/checkout`, 'POST'), 'Order saved to <code>shop.orders</code> in Lakebase').then(() => openDrawer(false));
+  else if (t.id === 'basketBtn') openDrawer(true);
+  else if (t.id === 'closeDrawer') openDrawer(false);
+});
+
+function openDrawer(open) { $('drawer').classList.toggle('open', open); $('scrim').classList.toggle('open', open); }
+$('srcToggle').addEventListener('change', e => document.body.classList.toggle('show-src', e.target.checked));
+
+(async () => {
+  try {
+    [S.accounts, S.products] = await Promise.all([api('/api/accounts'), api('/api/products')]);
+    await signIn(S.accounts[0].customer_id);
+  } catch (e) {
+    $('main').innerHTML = `<p class="empty">Could not load the shop: ${esc(e.message)}</p>`;
+  }
+})();
+</script>
+</body>
+</html>
